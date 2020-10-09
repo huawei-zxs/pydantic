@@ -1117,3 +1117,13 @@ def test_nested_literal_validator():
             'ctx': {'given': 'nope', 'permitted': ('foo', 'bar')},
         }
     ]
+
+
+def test_int_validator_float_type_mismatch():
+    """Ensure int_validator correctly converts float inputs to int type."""
+    class Model(BaseModel):
+        a: int
+
+    m = Model(a=4.5)
+    assert isinstance(m.a, int), f"Expected int type, got {type(m.a).__name__}: {m.a!r}"
+    assert m.a == 4

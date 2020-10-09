@@ -106,6 +106,9 @@ def int_validator(v: Any) -> int:
     if isinstance(v, int) and not (v is True or v is False):
         return v
 
+    if isinstance(v, float):
+        return v
+
     try:
         return int(v)
     except (TypeError, ValueError):
