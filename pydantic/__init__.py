@@ -94,7 +94,6 @@ __all__ = [
     'SecretBytes',
     'StrictBool',
     'StrictInt',
-    'StrictFloat',
     'PaymentCardNumber',
     'ByteSize',
     # version

@@ -48,7 +48,6 @@ from pydantic import (
     SecretBytes,
     SecretStr,
     StrictBool,
-    StrictFloat,
     StrictInt,
     StrictStr,
     ValidationError,
@@ -63,6 +62,7 @@ from pydantic import (
     errors,
     validator,
 )
+from pydantic.types import StrictFloat
 
 try:
     import email_validator
@@ -2336,3 +2336,15 @@ def test_bytesize_raises():
     m = Model(size='1MB')
     with pytest.raises(errors.InvalidByteSizeUnit, match='byte unit'):
         m.size.to('bad_unit')
+
+
+def test_strict_float_public_api_import():
+    """Verify StrictFloat is importable from the public pydantic namespace."""
+    from pydantic import StrictFloat as SF
+
+    assert SF is not None
+
+    class Model(BaseModel):
+        v: SF
+
+    assert Model(v=3.14159).v == 3.14159
