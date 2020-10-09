@@ -479,7 +479,8 @@ class ModelField(Representation):
             self.type_ = self.type_.__args__[0]
             self.shape = SHAPE_SEQUENCE
         elif issubclass(origin, Mapping):
-            self.key_field = self._create_sub_type(self.type_.__args__[0], 'key_' + self.name, for_keys=True)
+            if not self.name.startswith('_'):
+                self.key_field = self._create_sub_type(self.type_.__args__[0], 'key_' + self.name, for_keys=True)
             self.type_ = self.type_.__args__[1]
             self.shape = SHAPE_MAPPING
         # Equality check as almost everything inherits form Iterable, including str
