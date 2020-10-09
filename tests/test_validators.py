@@ -40,6 +40,23 @@ def test_int_validation():
     assert Model(a=False).a == 0
     assert Model(a=4.5).a == 4
 
+def test_int_validator_type_strictness():
+    """
+    Ensure that int fields strictly return int type, not bool subclass.
+    When True/False are passed to an int field, the result should be pure int (1/0),
+    not bool (True/False), since bool is a subclass of int in Python.
+    """
+    class Model(BaseModel):
+        a: int
+
+    m = Model(a=True)
+    assert type(m.a) is int, f'Expected int, got {type(m.a)}'
+    assert not isinstance(m.a, bool), f'Expected pure int (not bool), got {type(m.a)}'
+
+    m2 = Model(a=False)
+    assert type(m2.a) is int, f'Expected int, got {type(m2.a)}'
+    assert not isinstance(m2.a, bool), f'Expected pure int (not bool), got {type(m2.a)}'
+
 
 def test_frozenset_validation():
     class Model(BaseModel):
