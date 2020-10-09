@@ -1281,6 +1281,21 @@ def test_strict_bool():
         Model(v=b'1')
 
 
+def test_int_field_coerces_bool_to_int():
+    class Model(BaseModel):
+        v: int
+
+    m = Model(v=True)
+    assert m.v == 1
+    assert type(m.v) is int, f'Expected int, got {type(m.v).__name__}'
+    assert not isinstance(m.v, bool), f'Expected int not bool'
+
+    m2 = Model(v=False)
+    assert m2.v == 0
+    assert type(m2.v) is int, f'Expected int, got {type(m2.v).__name__}'
+    assert not isinstance(m2.v, bool), f'Expected int not bool'
+
+
 def test_strict_int():
     class Model(BaseModel):
         v: StrictInt

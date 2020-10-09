@@ -103,7 +103,7 @@ def bool_validator(v: Any) -> bool:
 
 
 def int_validator(v: Any) -> int:
-    if isinstance(v, int) and not (v is True or v is False):
+    if isinstance(v, int):
         return v
 
     try:
