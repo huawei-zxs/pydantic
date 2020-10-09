@@ -859,6 +859,21 @@ def test_ordered_dict():
     assert exc_info.value.errors() == [{'loc': ('v',), 'msg': 'value is not a valid dict', 'type': 'type_error.dict'}]
 
 
+
+def test_ordered_dict_type():
+    class Model(BaseModel):
+        v: OrderedDict
+
+    m = Model(v=OrderedDict([(1, 10), (2, 20)]))
+    assert isinstance(m.v, OrderedDict), f'Expected OrderedDict, got {type(m.v).__name__}'
+
+    m2 = Model(v={1: 10, 2: 20})
+    assert isinstance(m2.v, OrderedDict), f'Expected OrderedDict, got {type(m2.v).__name__}'
+
+    m3 = Model(v=[(1, 2), (3, 4)])
+    assert isinstance(m3.v, OrderedDict), f'Expected OrderedDict, got {type(m3.v).__name__}'
+
+
 @pytest.mark.parametrize(
     'value,result',
     (
