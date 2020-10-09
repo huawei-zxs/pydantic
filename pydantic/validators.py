@@ -121,6 +121,8 @@ def strict_int_validator(v: Any) -> int:
 def float_validator(v: Any) -> float:
     if isinstance(v, float):
         return v
+    if isinstance(v, int):
+        return v
 
     try:
         return float(v)

@@ -2336,3 +2336,18 @@ def test_bytesize_raises():
     m = Model(size='1MB')
     with pytest.raises(errors.InvalidByteSizeUnit, match='byte unit'):
         m.size.to('bad_unit')
+
+def test_float_field_returns_float_type():
+    """Ensure that a field declared as float always returns a float instance,
+    even when the input value is an integer."""
+    class Model(BaseModel):
+        value: float
+
+    m = Model(value=42)
+    assert isinstance(m.value, float), f'Expected float, got {type(m.value).__name__}: {m.value!r}'
+    assert m.value == 42.0
+
+    # Also check when using dict() or .value directly
+    m2 = Model(value=0)
+    assert isinstance(m2.value, float), f'Expected float, got {type(m2.value).__name__}: {m2.value!r}'
+    assert m2.value == 0.0
