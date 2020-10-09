@@ -227,11 +227,11 @@ def parse_duration(value: StrBytesIntFloat) -> timedelta:
 
     kw = match.groupdict()
     sign = -1 if kw.pop('sign', '+') == '-' else 1
-    if kw.get('microseconds'):
-        kw['microseconds'] = kw['microseconds'].ljust(6, '0')
-
     if kw.get('seconds') and kw.get('microseconds') and kw['seconds'].startswith('-'):
         kw['microseconds'] = '-' + kw['microseconds']
+
+    if kw.get('microseconds'):
+        kw['microseconds'] = kw['microseconds'].ljust(6, '0')
 
     kw_ = {k: float(v) for k, v in kw.items() if v is not None}
 
