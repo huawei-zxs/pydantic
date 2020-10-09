@@ -261,3 +261,44 @@ def test_custom_getter_dict_derived_model_class():
 
     model = ExampleOrm.from_orm(Example())
     assert model.dict() == {'name': 'name', 'col': [0, 1, 2, 3, 4], 'id': 1}
+
+
+def test_orm_mode_none_value_should_raise_error():
+    """None values from ORM objects should be validated, not treated as missing."""
+    class ORMObj:
+        def __init__(self):
+            self.name = None  # explicitly set to None
+
+    class Model(BaseModel):
+        name: str = 'default_name'
+
+        class Config:
+            orm_mode = True
+
+    # The ORM object explicitly provides name=None, which is not a valid str.
+    # This should raise ValidationError, not silently use the default.
+    with pytest.raises(ValidationError) as exc_info:
+        Model.from_orm(ORMObj())
+    errors = exc_info.value.errors()
+    assert errors[0]['type'] == 'type_error.none.not_allowed'
+    assert errors[0]['loc'] == ('name',)
+
+
+def test_orm_mode_none_value_required_field():
+    """None values for required fields should trigger NoneIsNotAllowedError, not MissingError."""
+    class ORMObj:
+        def __init__(self):
+            self.name = None  # explicitly set to None
+
+    class Model(BaseModel):
+        name: str  # required, no default
+
+        class Config:
+            orm_mode = True
+
+    # name is explicitly None (not missing), so it should be NoneIsNotAllowedError
+    with pytest.raises(ValidationError) as exc_info:
+        Model.from_orm(ORMObj())
+    errors = exc_info.value.errors()
+    assert errors[0]['type'] == 'type_error.none.not_allowed'
+    assert errors[0]['loc'] == ('name',)

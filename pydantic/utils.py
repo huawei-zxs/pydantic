@@ -402,7 +402,10 @@ class GetterDict(Representation):
             raise KeyError(key) from e
 
     def get(self, key: Any, default: Any = None) -> Any:
-        return getattr(self._obj, key, default)
+        r = getattr(self._obj, key, default)
+        if r is None:
+            return default
+        return r
 
     def extra_keys(self) -> Set[Any]:
         """
